@@ -10,10 +10,9 @@ $entries = json_decode(file_get_contents(ENTRIES_FILE), true) ?: [];
 
 // POST işleme
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password = $_POST['password'] ?? '';
     $content = trim($_POST['content'] ?? '');
     
-    if (!empty($content) && password_verify($password, PASSWORD_HASH)) {
+    if (!empty($content)) {
         $newEntry = [
             'date' => date('Y-m-d H:i:s'),
             'content' => nl2br(htmlspecialchars($content))
@@ -36,7 +35,7 @@ $success = isset($_GET['success']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anonim Günlük</title>
+    <title>Açık Günlük</title>
     <style>
         body { max-width: 800px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif; }
         .entry { margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
@@ -48,11 +47,11 @@ $success = isset($_GET['success']);
 </head>
 <body>
     <?php if(isset($_GET['admin'])): ?>
-        <!-- Yönetici Paneli -->
-        <h2>Yeni Günlük Kaydı</h2>
+        <!-- Yeni Giriş Formu -->
+        <h2>Yeni Günlük Girişi</h2>
         
         <?php if($error): ?>
-            <div class="error">Hata: Geçersiz parola veya boş içerik!</div>
+            <div class="error">Hata: İçerik boş olamaz!</div>
         <?php endif; ?>
         
         <?php if($success): ?>
@@ -64,18 +63,13 @@ $success = isset($_GET['success']);
                 name="content" 
                 placeholder="Bugün neler oldu..."
                 required></textarea>
-            <input 
-                type="password" 
-                name="password" 
-                placeholder="Yönetici Parolası" 
-                required>
-            <button type="submit">Kaydet</button>
+            <button type="submit">Yayınla</button>
         </form>
         <p><a href="?">← Tüm Kayıtları Görüntüle</a></p>
     
     <?php else: ?>
         <!-- Ana Sayfa -->
-        <h1>Günlük Kayıtları</h1>
+        <h1>Herkese Açık Günlük</h1>
         
         <?php if(empty($entries)): ?>
             <p>Henüz kayıt bulunmamaktadır.</p>
@@ -89,7 +83,7 @@ $success = isset($_GET['success']);
         <?php endif; ?>
         
         <div style="margin-top: 50px; text-align: center;">
-            <a href="?admin">Yeni Kayıt Ekle (Yönetici)</a>
+            <a href="?admin">Yeni Kayıt Ekle</a>
         </div>
     <?php endif; ?>
 </body>
